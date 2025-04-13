@@ -28,6 +28,9 @@ class UserData {
         case .exchange:
             // Для обмена баланс обновляется отдельно
             break
+        case .loan:
+            // Для займа баланс обновляется отдельно
+            break
         }
         
         // Отправляем уведомление об изменении списка транзакций
@@ -70,6 +73,7 @@ struct Transaction {
         case send
         case receive
         case exchange
+        case loan
     }
     
     let type: TransactionType
@@ -78,13 +82,21 @@ struct Transaction {
     let date: Date
     let address: String
     let details: ExchangeDetails?
+    let loanDetails: LoanDetails?
     
-    init(type: TransactionType, amount: Double, currency: String, date: Date, address: String, details: ExchangeDetails? = nil) {
+    init(type: TransactionType, amount: Double, currency: String, date: Date, address: String, details: ExchangeDetails? = nil, loanDetails: LoanDetails? = nil) {
         self.type = type
         self.amount = amount
         self.currency = currency
         self.date = date
         self.address = address
         self.details = details
+        self.loanDetails = loanDetails
     }
+}
+
+struct LoanDetails {
+    let term: Int
+    let collateral: Double
+    let collateralCurrency: String
 }

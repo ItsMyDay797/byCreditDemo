@@ -293,6 +293,25 @@ class DashboardViewController: UIViewController {
         let newLoan = (amount: amount, term: term, collateral: collateral, date: Date())
         loans.append(newLoan)
         
+        // Создаем транзакцию для займа
+        let loanDetails = LoanDetails(
+            term: term,
+            collateral: collateral,
+            collateralCurrency: "BTC"
+        )
+        
+        let loanTransaction = Transaction(
+            type: .loan,
+            amount: amount,
+            currency: "USDT",
+            date: Date(),
+            address: "Займ под залог",
+            loanDetails: loanDetails
+        )
+        
+        // Добавляем транзакцию в историю
+        UserData.shared.addTransaction(loanTransaction)
+        
         // Обновляем таблицу
         tableView.reloadData()
     }

@@ -180,7 +180,7 @@ class TransactionsViewController: UIViewController {
         tableView.reloadData()
     }
     
-    func showExchangeDetails(for transaction: Transaction) {
+    private func showExchangeDetails(for transaction: Transaction) {
         let detailsVC = UIViewController()
         detailsVC.view.backgroundColor = .systemBackground
         
@@ -214,7 +214,69 @@ class TransactionsViewController: UIViewController {
         
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("Закрыть", for: .normal)
-        closeButton.addTarget(detailsVC, action: #selector(UIViewController.dismiss(animated:completion:)), for: .touchUpInside)
+        closeButton.addTarget(detailsVC, action: #selector(detailsVC.dismissVC), for: .touchUpInside)
+        container.addSubview(closeButton)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: detailsVC.view.leadingAnchor, constant: 20),
+            container.trailingAnchor.constraint(equalTo: detailsVC.view.trailingAnchor, constant: -20),
+            container.centerYAnchor.constraint(equalTo: detailsVC.view.centerYAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            
+            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            
+            closeButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
+            closeButton.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            closeButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -20)
+        ])
+        
+        let nav = UINavigationController(rootViewController: detailsVC)
+        nav.modalPresentationStyle = .pageSheet
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium()]
+        }
+        present(nav, animated: true)
+    }
+    
+    private func showLoanDetails(for transaction: Transaction, details: LoanDetails) {
+        let detailsVC = UIViewController()
+        detailsVC.view.backgroundColor = .systemBackground
+        
+        let container = UIView()
+        container.backgroundColor = UIColor.systemGray6
+        container.layer.cornerRadius = 12
+        detailsVC.view.addSubview(container)
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let titleLabel = UILabel()
+        titleLabel.text = "Детали займа"
+        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        titleLabel.textAlignment = .center
+        container.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        container.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let amountLabel = createDetailRow(title: "Сумма займа:", value: "\(formatNumber(transaction.amount)) \(transaction.currency)")
+        let termLabel = createDetailRow(title: "Срок:", value: "\(details.term) дней")
+        let collateralLabel = createDetailRow(title: "Залог:", value: "\(formatNumber(details.collateral)) \(details.collateralCurrency)")
+        let dateLabel = createDetailRow(title: "Дата:", value: formatDate(transaction.date))
+        
+        [amountLabel, termLabel, collateralLabel, dateLabel].forEach { stackView.addArrangedSubview($0) }
+        
+        let closeButton = UIButton(type: .system)
+        closeButton.setTitle("Закрыть", for: .normal)
+        closeButton.addTarget(detailsVC, action: #selector(detailsVC.dismissVC), for: .touchUpInside)
         container.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -307,6 +369,8 @@ extension TransactionsViewController: UITableViewDelegate, UITableViewDataSource
         let transaction = filteredTransactions[indexPath.row]
         if transaction.type == .exchange, let details = transaction.details {
             showExchangeDetails(for: transaction)
+        } else if transaction.type == .loan, let loanDetails = transaction.loanDetails {
+            showLoanDetails(for: transaction, details: loanDetails)
         }
     }
     
@@ -450,9 +514,18 @@ class TransactionCell: UITableViewCell {
                 amountLabel.text = "\(formatNumber(transaction.amount)) \(transaction.currency)"
                 addressLabel.text = "Обмен валют"
             }
+        case .loan:
+            typeIcon.image = UIImage(systemName: "dollarsign.circle.fill")
+            typeIcon.tintColor = .systemPurple
+            amountLabel.text = "+\(formatNumber(transaction.amount)) \(transaction.currency)"
+            if let loanDetails = transaction.loanDetails {
+                addressLabel.text = "Займ на \(loanDetails.term) дней, залог: \(formatNumber(loanDetails.collateral)) \(loanDetails.collateralCurrency)"
+            } else {
+                addressLabel.text = "Получение займа"
+            }
         }
         
-        if transaction.type != .exchange {
+        if transaction.type != .exchange && transaction.type != .loan {
             addressLabel.text = transaction.address
         }
         
@@ -464,5 +537,11 @@ class TransactionCell: UITableViewCell {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+}
+
+extension UIViewController {
+    @objc func dismissVC() {
+        dismiss(animated: true, completion: nil)
     }
 }
