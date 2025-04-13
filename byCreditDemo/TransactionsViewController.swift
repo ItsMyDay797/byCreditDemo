@@ -165,6 +165,11 @@ class TransactionsViewController: UIViewController {
             self.tableView.reloadData()
         })
         
+        alert.addAction(UIAlertAction(title: "Займы", style: .default) { _ in
+            self.filteredTransactions = self.transactions.filter { $0.type == .loan }
+            self.tableView.reloadData()
+        })
+        
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         
         present(alert, animated: true)
@@ -180,26 +185,93 @@ class TransactionsViewController: UIViewController {
         tableView.reloadData()
     }
     
+    private func createDetailRow(title: String, value: String) -> UIView {
+        let container = UIView()
+        
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.textColor = .secondaryLabel
+        titleLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        container.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let valueLabel = UILabel()
+        valueLabel.text = value
+        valueLabel.font = .systemFont(ofSize: 17, weight: .semibold)
+        valueLabel.textColor = .label
+        container.addSubview(valueLabel)
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let separator = UIView()
+        separator.backgroundColor = UIColor.separator.withAlphaComponent(0.3)
+        container.addSubview(separator)
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+            titleLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12),
+            
+            valueLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            valueLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            
+            separator.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            separator.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
+        
+        return container
+    }
+    
     private func showExchangeDetails(for transaction: Transaction) {
         let detailsVC = UIViewController()
         detailsVC.view.backgroundColor = .systemBackground
         
+        // Создаем градиентный фон
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor.systemBackground.cgColor,
+            UIColor.systemGray6.cgColor
+        ]
+        gradientLayer.locations = [0.0, 1.0]
+        detailsVC.view.layer.insertSublayer(gradientLayer, at: 0)
+        
         let container = UIView()
-        container.backgroundColor = UIColor.systemGray6
-        container.layer.cornerRadius = 12
+        container.backgroundColor = .secondarySystemBackground
+        container.layer.cornerRadius = 16
+        container.layer.masksToBounds = true
         detailsVC.view.addSubview(container)
         container.translatesAutoresizingMaskIntoConstraints = false
         
+        // Добавляем тень для контейнера
+        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowOffset = CGSize(width: 0, height: 2)
+        container.layer.shadowRadius = 8
+        container.layer.shadowOpacity = 0.1
+        
+        let iconContainer = UIView()
+        iconContainer.backgroundColor = .systemBlue.withAlphaComponent(0.1)
+        iconContainer.layer.cornerRadius = 25
+        container.addSubview(iconContainer)
+        iconContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        let iconImageView = UIImageView(image: UIImage(systemName: "arrow.triangle.2.circlepath.circle.fill"))
+        iconImageView.tintColor = .systemBlue
+        iconImageView.contentMode = .scaleAspectFit
+        iconContainer.addSubview(iconImageView)
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        
         let titleLabel = UILabel()
         titleLabel.text = "Детали обмена"
-        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
         titleLabel.textAlignment = .center
         container.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 16
+        stackView.spacing = 0
         container.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -214,6 +286,10 @@ class TransactionsViewController: UIViewController {
         
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("Закрыть", for: .normal)
+        closeButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        closeButton.backgroundColor = .systemBlue
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.layer.cornerRadius = 12
         closeButton.addTarget(detailsVC, action: #selector(detailsVC.dismissVC), for: .touchUpInside)
         container.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -223,7 +299,17 @@ class TransactionsViewController: UIViewController {
             container.trailingAnchor.constraint(equalTo: detailsVC.view.trailingAnchor, constant: -20),
             container.centerYAnchor.constraint(equalTo: detailsVC.view.centerYAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
+            iconContainer.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
+            iconContainer.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            iconContainer.widthAnchor.constraint(equalToConstant: 50),
+            iconContainer.heightAnchor.constraint(equalToConstant: 50),
+            
+            iconImageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: 30),
+            iconImageView.heightAnchor.constraint(equalToConstant: 30),
+            
+            titleLabel.topAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
             
@@ -231,8 +317,10 @@ class TransactionsViewController: UIViewController {
             stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
             
-            closeButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
-            closeButton.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            closeButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 24),
+            closeButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            closeButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -20)
         ])
         
@@ -240,7 +328,13 @@ class TransactionsViewController: UIViewController {
         nav.modalPresentationStyle = .pageSheet
         if let sheet = nav.sheetPresentationController {
             sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
         }
+        
+        // Добавляем обработку изменения размера для градиента
+        detailsVC.view.layoutSubviews()
+        gradientLayer.frame = detailsVC.view.bounds
+        
         present(nav, animated: true)
     }
     
@@ -248,22 +342,50 @@ class TransactionsViewController: UIViewController {
         let detailsVC = UIViewController()
         detailsVC.view.backgroundColor = .systemBackground
         
+        // Создаем градиентный фон
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor.systemBackground.cgColor,
+            UIColor.systemGray6.cgColor
+        ]
+        gradientLayer.locations = [0.0, 1.0]
+        detailsVC.view.layer.insertSublayer(gradientLayer, at: 0)
+        
         let container = UIView()
-        container.backgroundColor = UIColor.systemGray6
-        container.layer.cornerRadius = 12
+        container.backgroundColor = .secondarySystemBackground
+        container.layer.cornerRadius = 16
+        container.layer.masksToBounds = true
         detailsVC.view.addSubview(container)
         container.translatesAutoresizingMaskIntoConstraints = false
         
+        // Добавляем тень для контейнера
+        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowOffset = CGSize(width: 0, height: 2)
+        container.layer.shadowRadius = 8
+        container.layer.shadowOpacity = 0.1
+        
+        let iconContainer = UIView()
+        iconContainer.backgroundColor = .systemPurple.withAlphaComponent(0.1)
+        iconContainer.layer.cornerRadius = 25
+        container.addSubview(iconContainer)
+        iconContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        let iconImageView = UIImageView(image: UIImage(systemName: "dollarsign.circle.fill"))
+        iconImageView.tintColor = .systemPurple
+        iconImageView.contentMode = .scaleAspectFit
+        iconContainer.addSubview(iconImageView)
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        
         let titleLabel = UILabel()
         titleLabel.text = "Детали займа"
-        titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
         titleLabel.textAlignment = .center
         container.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 16
+        stackView.spacing = 0
         container.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -276,6 +398,10 @@ class TransactionsViewController: UIViewController {
         
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("Закрыть", for: .normal)
+        closeButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        closeButton.backgroundColor = .systemPurple
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.layer.cornerRadius = 12
         closeButton.addTarget(detailsVC, action: #selector(detailsVC.dismissVC), for: .touchUpInside)
         container.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -285,7 +411,17 @@ class TransactionsViewController: UIViewController {
             container.trailingAnchor.constraint(equalTo: detailsVC.view.trailingAnchor, constant: -20),
             container.centerYAnchor.constraint(equalTo: detailsVC.view.centerYAnchor),
             
-            titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
+            iconContainer.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
+            iconContainer.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            iconContainer.widthAnchor.constraint(equalToConstant: 50),
+            iconContainer.heightAnchor.constraint(equalToConstant: 50),
+            
+            iconImageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: 30),
+            iconImageView.heightAnchor.constraint(equalToConstant: 30),
+            
+            titleLabel.topAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
             
@@ -293,8 +429,10 @@ class TransactionsViewController: UIViewController {
             stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
             
-            closeButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
-            closeButton.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            closeButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 24),
+            closeButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            closeButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            closeButton.heightAnchor.constraint(equalToConstant: 50),
             closeButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -20)
         ])
         
@@ -302,37 +440,14 @@ class TransactionsViewController: UIViewController {
         nav.modalPresentationStyle = .pageSheet
         if let sheet = nav.sheetPresentationController {
             sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
         }
+        
+        // Добавляем обработку изменения размера для градиента
+        detailsVC.view.layoutSubviews()
+        gradientLayer.frame = detailsVC.view.bounds
+        
         present(nav, animated: true)
-    }
-    
-    private func createDetailRow(title: String, value: String) -> UIView {
-        let container = UIView()
-        
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.textColor = .secondaryLabel
-        titleLabel.font = .systemFont(ofSize: 14)
-        container.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        let valueLabel = UILabel()
-        valueLabel.text = value
-        valueLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        container.addSubview(valueLabel)
-        valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: container.topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            
-            valueLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            valueLabel.topAnchor.constraint(equalTo: container.topAnchor),
-            valueLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        ])
-        
-        return container
     }
     
     private func formatNumber(_ number: Double) -> String {
