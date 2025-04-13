@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 class UserData {
     static let shared = UserData()
@@ -9,8 +10,11 @@ class UserData {
         }
     }
     private(set) var transactions: [Transaction] = []
+    var avatarImage: UIImage? = nil
     
-    private init() {}
+    private init() {
+        // Инициализация с дефолтными значениями
+    }
     
     var name: String = "Иван Иванов"
     var email: String = "ivan@example.com"
@@ -57,6 +61,7 @@ extension Notification.Name {
     static let balanceDidChange = Notification.Name("balanceDidChange")
     static let userDidLogout = Notification.Name("userDidLogout")
     static let transactionsDidChange = Notification.Name("transactionsDidChange")
+    static let avatarDidChange = Notification.Name("avatarDidChange")
 }
 
 struct ExchangeDetails {

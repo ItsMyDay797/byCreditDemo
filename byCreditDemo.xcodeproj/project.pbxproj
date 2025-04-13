@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		6F14A3912DA9B5D00001083E /* TransactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14A3902DA9B5D00001083E /* TransactionsViewController.swift */; };
+		6F14A3932DABEE8E0001083E /* SecurityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14A3922DABEE8E0001083E /* SecurityViewController.swift */; };
+		6F14A3952DABEEA50001083E /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14A3942DABEEA50001083E /* NotificationsViewController.swift */; };
+		6F14A3972DABEEE20001083E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14A3962DABEEE20001083E /* SettingsViewController.swift */; };
 		6F3765C82DA2AAB400D4E3BB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3765C72DA2AAB400D4E3BB /* AppDelegate.swift */; };
 		6F3765CA2DA2AAB400D4E3BB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3765C92DA2AAB400D4E3BB /* SceneDelegate.swift */; };
 		6F3765CC2DA2AAB400D4E3BB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3765CB2DA2AAB400D4E3BB /* ViewController.swift */; };
@@ -27,6 +30,9 @@
 
 /* Begin PBXFileReference section */
 		6F14A3902DA9B5D00001083E /* TransactionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsViewController.swift; sourceTree = "<group>"; };
+		6F14A3922DABEE8E0001083E /* SecurityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityViewController.swift; sourceTree = "<group>"; };
+		6F14A3942DABEEA50001083E /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
+		6F14A3962DABEEE20001083E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = ../SettingsViewController.swift; sourceTree = "<group>"; };
 		6F3765C42DA2AAB400D4E3BB /* byCreditDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = byCreditDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F3765C72DA2AAB400D4E3BB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F3765C92DA2AAB400D4E3BB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -89,6 +95,9 @@
 				6F5896F72DA443F400A960C4 /* ProfileViewController.swift */,
 				6F5896F92DA4451100A960C4 /* UserData.swift */,
 				6F14A3902DA9B5D00001083E /* TransactionsViewController.swift */,
+				6F14A3922DABEE8E0001083E /* SecurityViewController.swift */,
+				6F14A3942DABEEA50001083E /* NotificationsViewController.swift */,
+				6F14A3962DABEEE20001083E /* SettingsViewController.swift */,
 				6F3765CD2DA2AAB400D4E3BB /* Main.storyboard */,
 				6F3765D02DA2AAB800D4E3BB /* Assets.xcassets */,
 				6F3765D22DA2AAB800D4E3BB /* LaunchScreen.storyboard */,
@@ -168,16 +177,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F14A3952DABEEA50001083E /* NotificationsViewController.swift in Sources */,
 				6F5896EE2DA4374600A960C4 /* ReceiveViewController.swift in Sources */,
 				6F5896F22DA437E800A960C4 /* ExchangeViewController.swift in Sources */,
 				6F5896EC2DA431E900A960C4 /* LoansViewController.swift in Sources */,
 				6F5896F02DA4376900A960C4 /* SendViewController.swift in Sources */,
 				6F3765CC2DA2AAB400D4E3BB /* ViewController.swift in Sources */,
 				6F14A3912DA9B5D00001083E /* TransactionsViewController.swift in Sources */,
+				6F14A3972DABEEE20001083E /* SettingsViewController.swift in Sources */,
 				6F3765C82DA2AAB400D4E3BB /* AppDelegate.swift in Sources */,
 				6F5896FA2DA4451100A960C4 /* UserData.swift in Sources */,
 				6F5896F82DA443F500A960C4 /* ProfileViewController.swift in Sources */,
 				6F3765CA2DA2AAB400D4E3BB /* SceneDelegate.swift in Sources */,
+				6F14A3932DABEE8E0001083E /* SecurityViewController.swift in Sources */,
 				6F3765DC2DA2AD3500D4E3BB /* DashboardViewController.swift in Sources */,
 				6F3765E02DA2B51300D4E3BB /* LoanViewController.swift in Sources */,
 				6F3765DE2DA2B11400D4E3BB /* LoginPopupWindow.swift in Sources */,
